@@ -9,14 +9,34 @@ import {
 import { useWorkspaceModal } from "../store/useWorkspaceModal"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useWorkspaceCreator } from "../api/useWorkspaceCreator";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const WorkspaceCreationModal = () => {
+    const router = useRouter();
     const [open, setOpen] = useWorkspaceModal();
+    const [name, setName] = useState("");
+
+    const { mutate, isPending } = useWorkspaceCreator();
 
     const handleClose = () => {
         setOpen(false);
-        // TODO: clear form
-    }
+        setName("");
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        mutate({ name }, {
+            onSuccess(id) {
+                toast.success("Workspace created");
+                router.push(`/workspace/${id}`);
+                handleClose();
+            },
+        })
+    };
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
@@ -27,17 +47,18 @@ export const WorkspaceCreationModal = () => {
                         Please provide the necessary details to create a new workspace.
                     </DialogDescription>
                 </DialogHeader>
-                <form className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <Input
-                        value=""
-                        disabled={false}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        disabled={isPending}
                         required
                         autoFocus
                         minLength={3}
                         placeholder="e.g. 'Work', 'Class', 'Personal'"
                     />
                     <div className="flex justify-end">
-                        <Button disabled={false}>
+                        <Button disabled={isPending}>
                             Create
                         </Button>
                     </div>
