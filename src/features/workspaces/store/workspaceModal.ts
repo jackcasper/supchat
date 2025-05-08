@@ -2,6 +2,6 @@ import { atom, useAtom } from "jotai";
 
 const workspaceModalState = atom(false);
 
-export const useWorkspaceModal = () => {
+export const workspaceModal = () => {
     return useAtom(workspaceModalState);
 };

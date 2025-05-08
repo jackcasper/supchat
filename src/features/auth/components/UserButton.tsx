@@ -9,13 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useActiveUser } from "../api/useActiveUser";
+import { activeUser } from "../api/activeUser";
 import { Loader, LogOut } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 
 export const UserButton = () => {
     const { signOut } = useAuthActions();
-    const { data, isLoading } = useActiveUser();
+    const { data, isLoading } = activeUser();
 
     if (isLoading) {
         return <Loader className="size-4 animate-spin text-muted-foreground" />

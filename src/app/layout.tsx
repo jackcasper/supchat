@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppModals } from "@/components/AppModals";
 import { Toaster } from "@/components/ui/sonner";
+import { StateScope } from "@/components/StateScope";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +35,11 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ConvexClientProvider>
-            <Toaster />
-            <AppModals />
-            {children}
+            <StateScope>
+              <Toaster />
+              <AppModals />
+              {children}
+            </StateScope>
           </ConvexClientProvider>
         </body>
       </html>

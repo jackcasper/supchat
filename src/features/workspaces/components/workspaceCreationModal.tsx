@@ -6,20 +6,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useWorkspaceModal } from "../store/useWorkspaceModal"
+import { workspaceModal } from "../store/workspaceModal"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceCreator } from "../api/useWorkspaceCreator";
+import { workspaceCreator } from "../api/workspaceCreator";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const WorkspaceCreationModal = () => {
     const router = useRouter();
-    const [open, setOpen] = useWorkspaceModal();
+    const [open, setOpen] = workspaceModal();
     const [name, setName] = useState("");
 
-    const { mutate, isPending } = useWorkspaceCreator();
+    const { mutate, isPending } = workspaceCreator();
 
     const handleClose = () => {
         setOpen(false);
