@@ -25,7 +25,7 @@ export const workspaceNewJoinCode = () => {
 
     const mutation = useMutation(api.workspaces.newJoinCode);
 
-    const mutate = useCallback(async (values: any, options?: Options) => {
+    const mutate = useCallback(async (values: RequestType, options?: Options) => {
         try {
             setData(null);
             setError(null);
