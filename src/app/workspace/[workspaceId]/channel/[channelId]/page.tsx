@@ -6,16 +6,15 @@ import { AlertTriangle, LoaderCircle } from "lucide-react";
 import { Header } from "./header";
 import { Chat } from "./chat";
 import { messageList } from "@/features/messages/api/messageList";
+import { MessageFile } from "@/components/messageFile";
 
 const ChannelIdScreen = () => {
     const channelId = channelIdParam();
 
-    const { results } = messageList({ channelId });
+    const { results, status, loadMore } = messageList({ channelId });
     const { data: channel, isLoading: channelLoading } = channelById({ id: channelId });
 
-    console.log({ results });
-
-    if (channelLoading) {
+    if (channelLoading || status === "LoadingFirstPage") {
         return (
             <div className="h-full flex-1 flex items-center justify-center">
                 <LoaderCircle className="animate-spin size-5 text-muted-foreground" />
@@ -37,9 +36,14 @@ const ChannelIdScreen = () => {
     return (
         <div className="flex flex-col h-full">
             <Header channelName={channel.name} />
-            <div className="flex-1">
-                {JSON.stringify(results)}
-            </div>
+            <MessageFile
+                channelName={channel.name}
+                channelCreationTime={channel._creationTime}
+                data={results}
+                loadMore={loadMore}
+                isLoadingMore={status === "LoadingMore"}
+                canLoadMore={status === "CanLoadMore"}
+            />
             <Chat placeholder={`Message # ${channel.name}`} />
         </div>
     );

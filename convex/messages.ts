@@ -68,6 +68,68 @@ const getMember = async (
         .unique();
 };
 
+export const update = mutation({
+    args: {
+        id: v.id("messages"),
+        body: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+
+        if (!userId) {
+            throw new Error("Unauthorized");
+        }
+
+        const message = await ctx.db.get(args.id);
+
+        if (!message) {
+            throw new Error("Message not found");
+        }
+
+        const member = await getMember(ctx, message.workspaceId, userId);
+
+        if (!member || member._id !== message.memberId) {
+            throw new Error("Unauthorized");
+        }
+
+        await ctx.db.patch(args.id, {
+            body: args.body,
+            updatedAt: Date.now(),
+        });
+
+        return args.id;
+    },
+});
+
+export const remove = mutation({
+    args: {
+        id: v.id("messages"),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+
+        if (!userId) {
+            throw new Error("Unauthorized");
+        }
+
+        const message = await ctx.db.get(args.id);
+
+        if (!message) {
+            throw new Error("Message not found");
+        }
+
+        const member = await getMember(ctx, message.workspaceId, userId);
+
+        if (!member || member._id !== message.memberId) {
+            throw new Error("Unauthorized");
+        }
+
+        await ctx.db.delete(args.id);
+
+        return args.id;
+    },
+});
+
 export const get = query({
     args: {
         conversationId: v.optional(v.id("conversations")),
@@ -111,11 +173,15 @@ export const get = query({
                 await Promise.all(
                     results.page.map(async (message) => {
                         const member = await populateMember(ctx, message.memberId);
+                        if (!member) {
+                            return null
+                        };
+
                         const user = member ? await populateUser(ctx, member.userId) : null;
 
-                        if (!member || null) {
-                            return null;
-                        }
+                        if (!user) {
+                            return null
+                        };
 
                         const thread = await populateThread(ctx, message._id);
                         const reactions = await populateReactions(ctx, message._id);
@@ -194,7 +260,7 @@ export const create = mutation({
         const member = await getMember(ctx, args.workspaceId, userId);
         
         if (!member) {
-            throw new Error("401: Unauthorized");
+            throw new Error("403: Unauthorized");
         }
 
         let _conversationId = args.conversationId;
