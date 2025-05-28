@@ -2,20 +2,76 @@ import { Button } from "@/components/ui/button";
 import { workspaceById } from "@/features/workspaces/api/workspaceById";
 import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Info, Search } from "lucide-react";
+import {
+    Command,
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator,
+    CommandShortcut,
+} from "@/components/ui/command";
+import { useState } from "react";
+import { channelList } from "@/features/channels/api/channelList";
+import { memberList } from "@/features/members/api/memberList";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Toolbar = () => {
     const workspaceId = workspaceIdParam();
-    const { data } = workspaceById({id: workspaceId});
+    const router = useRouter();
+
+    const { data } = workspaceById({ id: workspaceId });
+    const { data: channels } = channelList({ workspaceId });
+    const { data: members } = memberList({ workspaceId });
+
+    const [open, setOpen] = useState(false);
+
+    const onChannelClick = (channelId: string) => {
+        setOpen(false);
+
+        router.push(`/workspace/${workspaceId}/channel/${channelId}`);
+    };
+    
+    const onMemberClick = (memberId: string) => {
+        setOpen(false);
+
+        router.push(`/workspace/${workspaceId}/member/${memberId}`);
+    };
+
     return (
         <nav className="bg-[#3D2683] flex items-center justify-between h-10 p-1.5">
             <div className="flex-1" />
             <div className="min-w-[280px] max-[642px] grow-[2] shrink">
-                <Button size="sm" className="bg-accent/25 hover:bg-accent-25 w-full justify-start h-7 px-2">
+                <Button onClick={() => setOpen(true)} size="sm" className="bg-accent/25 hover:bg-accent-25 w-full justify-start h-7 px-2">
                     <Search className="size-4 text-white mr-2" />
                     <span className="text-white text-xs">
                         Search {data?.name}
                     </span>
                 </Button>
+                <CommandDialog open={open} onOpenChange={setOpen}>
+                    <CommandInput placeholder="Type a command or search..." />
+                    <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Channels">
+                            {channels?.map((channel) => (
+                                <CommandItem onSelect={() => onChannelClick(channel._id)}>
+                                    {channel.name}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                        <CommandSeparator />
+                        <CommandGroup heading="Members">
+                            {members?.map((member) => (
+                                <CommandItem onSelect={() => onMemberClick(member._id)}>
+                                    {member.user.name}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </CommandDialog>
             </div>
             <div className="mt-auto flex-1 flex items-center justify-end">
                 <Button variant="transparent" size="iconSm">

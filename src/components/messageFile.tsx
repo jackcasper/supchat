@@ -7,6 +7,7 @@ import { Id } from "../../convex/_generated/dataModel";
 import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { activeMember } from "@/features/members/api/activeMember";
 import { LoaderCircle } from "lucide-react";
+import { ConversationDetail } from "./conversationDetail";
 
 const TIME_THRESHOLD = 5;
 
@@ -58,6 +59,7 @@ export const MessageFile = ({
         },
         {} as Record<string, typeof data>
     );
+    
     return (
         <div className="flex-1 flex flex-col-reverse pb-4 overflow-auto messages-scrollbar">
             {Object.entries(groupMessages || {}).map(([dateKey, messages]) => (
@@ -97,6 +99,8 @@ export const MessageFile = ({
                                 hideThreadButton={variant === "thread"}
                                 threadCount={message.threadCount}
                                 threadTimestamp={message.threadTimestamp}
+                                threadName={message.threadName}
+                                threadImage={message.threadImage}
                             />
                         )
                     })}
@@ -132,6 +136,12 @@ export const MessageFile = ({
                 <ChannelDetail
                     name={channelName}
                     creationTime={channelCreationTime}
+                />
+            )}
+            {variant === "conversation" && (
+                <ConversationDetail
+                    name={memberName}
+                    image={memberImage}
                 />
             )}
         </div>

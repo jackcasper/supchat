@@ -12,6 +12,8 @@ import { messageRemover } from "@/features/messages/api/messageRemover";
 import { confirmation } from "@/hooks/confirmation";
 import { toggleReaction } from "@/features/reactions/api/toggleReaction";
 import { Reactions } from "./reactions";
+import { Panel } from "@/hooks/panel";
+import { ThreadBar } from "./threadBar";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -35,6 +37,7 @@ interface MessageProps {
     isCompact?: boolean;
     isEditing: boolean;
     setEditingId: (id: Id<"messages"> | null) => void;
+    threadName?: string;
     threadImage?: string;
     threadCount?: number;
     threadTimestamp?: number;
@@ -59,11 +62,14 @@ export const Message = ({
     isCompact,
     isEditing,
     setEditingId,
+    threadName,
     threadImage,
     threadCount,
     threadTimestamp,
     hideThreadButton,
 }: MessageProps) => {
+    const { parentMessageId, onOpenMessage, onClose, onOpenProfile } = Panel();
+
     const [ConfirmDialogue, confirm] = confirmation(
         "Delete message",
         "Are you sure you want to delete this message? This action is irreversible."
@@ -73,7 +79,7 @@ export const Message = ({
     const { mutate: removeMessage, isPending: removingMessage } = messageRemover();
     const { mutate: isToggleReaction, isPending: isTogglingReaction } = toggleReaction();
 
-    const isPending = updatingMessage;
+    const isPending = updatingMessage || isTogglingReaction;
 
     const handleReaction = (value: string) => {
         isToggleReaction({ messageId: id, value }, {
@@ -92,7 +98,9 @@ export const Message = ({
             onSuccess: () => {
                 toast.success("Message deleted");
 
-                // TODO: Close thread if open
+                if (parentMessageId === id) {
+                    onClose();
+                }
             },
             onError: () => {
                 toast.error("Failed to delete the message");
@@ -147,6 +155,13 @@ export const Message = ({
                                         </span>
                                     ) : null}
                                     <Reactions data={reactions} onChange={handleReaction} />
+                                    <ThreadBar
+                                        count={threadCount}
+                                        name={threadName}
+                                        image={threadImage}
+                                        timestamp={threadTimestamp}
+                                        onClick={() => onOpenMessage(id)}
+                                    />
                             </div>
                         )}
                     </div>
@@ -155,7 +170,7 @@ export const Message = ({
                             isAuthor={isAuthor}
                             isPending={false}
                             hideThreadButton={hideThreadButton}
-                            handleThread={() => { }}
+                            handleThread={() => onOpenMessage(id)}
                             handleDelete={handleRemove}
                             handleReaction={handleReaction}
                             handleEdit={() => setEditingId(id)}
@@ -178,7 +193,9 @@ export const Message = ({
                 "bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-100"
             )}>
                 <div className="flex items-start gap-2">
-                    <button>
+                    <button
+                        onClick={() => onOpenProfile(memberId)}
+                    >
                         <Avatar className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
                             <AvatarImage className="aspect-square size-full object-cover" src={authorImage} />
                             <AvatarFallback className="bg-muted flex size-full items-center justify-center rounded-full">
@@ -200,7 +217,7 @@ export const Message = ({
                             <div className="flex flex-col w-full overflow-hidden">
                                 <div className="text-sm">
                                     <button
-                                        onClick={() => { }}
+                                        onClick={() => onOpenProfile(memberId)}
                                         className="font-bold text-primary hover:underline"
                                     >
                                         {authorName}
@@ -219,6 +236,13 @@ export const Message = ({
                                     </span>
                                 ) : null}
                                 <Reactions data={reactions} onChange={handleReaction} />
+                                <ThreadBar
+                                    count={threadCount}
+                                    name={threadName}
+                                    image={threadImage}
+                                    timestamp={threadTimestamp}    
+                                    onClick={() => onOpenMessage(id)}
+                                />
                             </div>
                     )}
                 </div>
@@ -227,7 +251,7 @@ export const Message = ({
                         isAuthor={isAuthor}
                         isPending={isPending}
                         hideThreadButton={hideThreadButton}
-                        handleThread={() => { }}
+                        handleThread={() => onOpenMessage(id)}
                         handleDelete={handleRemove}
                         handleReaction={handleReaction}
                         handleEdit={() => setEditingId(id)}

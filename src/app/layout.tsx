@@ -7,6 +7,7 @@ import "./globals.css";
 import { AppModals } from "@/components/AppModals";
 import { Toaster } from "@/components/ui/sonner";
 import { StateScope } from "@/components/StateScope";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,7 @@ export default function RootLayout({
             <StateScope>
               <Toaster />
               <AppModals />
-              {children}
+              <NuqsAdapter>{children}</NuqsAdapter>
             </StateScope>
           </ConvexClientProvider>
         </body>

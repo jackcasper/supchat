@@ -1,6 +1,5 @@
 import { messageCreator } from "@/features/messages/api/messageCreator";
 import { generateUpload } from "@/features/upload/api/generateUpload";
-import { channelIdParam } from "@/hooks/channelIdParam";
 import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import dynamic from "next/dynamic";
 import Quill from "quill";
@@ -11,17 +10,18 @@ import { Id } from "../../../../../../convex/_generated/dataModel";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface ChatProps {
+    conversationId: Id<"conversations">;
     placeholder: string;
 };
 
 type CreateMessageValues = {
     workspaceId: Id<"workspaces">;
-    channelId: Id<"channels">;
+    conversationId: Id<"conversations">;
     image: Id<"_storage"> | undefined;
     body: string;
 };
 
-export const Chat = ({ placeholder }: ChatProps) => {
+export const Chat = ({ placeholder, conversationId }: ChatProps) => {
     const [editorKey, setEditorKey] = useState(0);
     const [pending, setPending] = useState(false);
 
@@ -31,7 +31,6 @@ export const Chat = ({ placeholder }: ChatProps) => {
     const { mutate: createMessage } = messageCreator();
     
     const workspaceId = workspaceIdParam();
-    const channelId = channelIdParam();
 
     const handleSubmit = async ({
         body,
@@ -46,7 +45,7 @@ export const Chat = ({ placeholder }: ChatProps) => {
 
             const values: CreateMessageValues = {
                 workspaceId,
-                channelId,
+                conversationId,
                 image: undefined,
                 body,
             };

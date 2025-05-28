@@ -10,10 +10,12 @@ import { memberList } from "@/features/members/api/memberList";
 import { UserItem } from "./userItem";
 import { channelModal } from "@/features/channels/store/channelModal";
 import { channelIdParam } from "@/hooks/channelIdParam";
+import { memberIdParam } from "@/hooks/memberIdParam";
 
 export const WorkspaceSidebar = () => {
     const channelId = channelIdParam();
     const workspaceId = workspaceIdParam();
+    const memberId = memberIdParam();
 
     const [_open, setOpen] = channelModal();
 
@@ -82,6 +84,7 @@ export const WorkspaceSidebar = () => {
                         id={item._id}
                         label={item.user.name}
                         image={item.user.image}
+                        variant={item._id === memberId ? "active" : "default"}
                     />
                 ))}
             </WorkspaceSection>
