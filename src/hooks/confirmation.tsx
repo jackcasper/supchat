@@ -5,12 +5,11 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { JSX, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export const confirmation = (
+export const useConfirmation = (
     title: string,
     message: string,
 ): [() => JSX.Element, () => Promise<unknown>] => {

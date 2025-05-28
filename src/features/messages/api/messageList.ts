@@ -4,7 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 
 const BATCH_SIZE = 20;
 
-interface MessageListProps {
+interface UseMessageListProps {
     channelId?: Id<"channels">;
     parentMessageId?: Id<"messages">;
     conversationId?: Id<"conversations">;
@@ -12,11 +12,11 @@ interface MessageListProps {
 
 export type MessageReturnType = typeof api.messages.get._returnType["page"];
 
-export const messageList = ({
+export const useMessageList = ({
     channelId,
     parentMessageId,
     conversationId,
-}: MessageListProps) => {
+}: UseMessageListProps) => {
     const { results, status, loadMore } = usePaginatedQuery(
         api.messages.get,
         { channelId, parentMessageId, conversationId },

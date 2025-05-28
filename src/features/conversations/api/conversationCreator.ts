@@ -1,7 +1,7 @@
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useCallback, useMemo, useState } from "react";
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 type RequestType = {
     workspaceId: Id<"workspaces">,
@@ -16,7 +16,7 @@ type Options = {
     throwError?: boolean;
 };
 
-export const conversationCreator = () => {
+export const useConversationCreator = () => {
     const [data, setData] = useState<ResponseType>(null);
     const [error, setError] = useState<Error | null>(null);
     const [status, setStatus] = useState<"success" | "error" | "pending" | "settled" | null>(null);

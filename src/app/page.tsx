@@ -1,16 +1,16 @@
 "use client";
 
 import { UserButton } from "@/features/auth/components/UserButton";
-import { workspaceModal } from "@/features/workspaces/store/workspaceModal";
-import { workspaceList } from "@/features/workspaces/api/workspaceList";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useWorkspaceList } from "@/features/workspaces/api/workspaceList";
+import { useWorkspaceModal } from "@/features/workspaces/store/workspaceModal";
 
 export default function Home() {
   const router = useRouter();
-  const [open, setOpen] = workspaceModal();
+  const [open, setOpen] = useWorkspaceModal();
 
-  const { data, isLoading } = workspaceList();
+  const { data, isLoading } = useWorkspaceList();
 
   const workspaceId = useMemo(() => data?.[0]?._id, [data]);
 

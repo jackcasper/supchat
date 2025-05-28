@@ -5,15 +5,15 @@ import { FloatNote } from "./FloatNote";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UploadImage } from "./uploadImage";
 import { Toolbar } from "./toolbar";
-import { messageUpdater } from "@/features/messages/api/messageUpdater";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { messageRemover } from "@/features/messages/api/messageRemover";
-import { confirmation } from "@/hooks/confirmation";
-import { toggleReaction } from "@/features/reactions/api/toggleReaction";
 import { Reactions } from "./reactions";
 import { Panel } from "@/hooks/panel";
 import { ThreadBar } from "./threadBar";
+import { useMessageRemover } from "@/features/messages/api/messageRemover";
+import { useMessageUpdater } from "@/features/messages/api/messageUpdater";
+import { useToggleReaction } from "@/features/reactions/api/toggleReaction";
+import { useConfirmation } from "@/hooks/confirmation";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -70,14 +70,14 @@ export const Message = ({
 }: MessageProps) => {
     const { parentMessageId, onOpenMessage, onClose, onOpenProfile } = Panel();
 
-    const [ConfirmDialogue, confirm] = confirmation(
+    const [ConfirmDialogue, confirm] = useConfirmation(
         "Delete message",
         "Are you sure you want to delete this message? This action is irreversible."
     );
 
-    const { mutate: updateMessage, isPending: updatingMessage } = messageUpdater();
-    const { mutate: removeMessage, isPending: removingMessage } = messageRemover();
-    const { mutate: isToggleReaction, isPending: isTogglingReaction } = toggleReaction();
+    const { mutate: updateMessage, isPending: updatingMessage } = useMessageUpdater();
+    const { mutate: removeMessage, isPending: removingMessage } = useMessageRemover();
+    const { mutate: isToggleReaction, isPending: isTogglingReaction } = useToggleReaction();
 
     const isPending = updatingMessage || isTogglingReaction;
 

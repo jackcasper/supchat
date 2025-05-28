@@ -1,24 +1,24 @@
-import { memberIdParam } from "@/hooks/memberIdParam";
 import { Id } from "../../../../../../convex/_generated/dataModel";
-import { memberById } from "@/features/members/api/memberById";
-import { messageList } from "@/features/messages/api/messageList";
 import { LoaderCircle } from "lucide-react";
 import { Header } from "./header";
 import { Chat } from "./chat";
 import { MessageFile } from "@/components/messageFile";
 import { Panel } from "@/hooks/panel";
+import { useMemberById } from "@/features/members/api/memberById";
+import { useMessageList } from "@/features/messages/api/messageList";
+import { useMemberIdParam } from "@/hooks/memberIdParam";
 
 interface ConversationProps {
     id: Id<"conversations">;
 };
 
 export const Conversation = ({ id }: ConversationProps) => { 
-    const memberId = memberIdParam();
+    const memberId = useMemberIdParam();
 
     const { onOpenProfile } = Panel();
 
-    const { data: member, isLoading: memberLoading } = memberById({ id: memberId });
-    const { status, loadMore, results } = messageList({
+    const { data: member, isLoading: memberLoading } = useMemberById({ id: memberId });
+    const { status, loadMore, results } = useMessageList({
         conversationId: id,
     });
 

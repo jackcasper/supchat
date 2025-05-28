@@ -1,9 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { workspaceInfo } from "@/features/workspaces/api/workspaceInfo";
-import { workspaceJoin } from "@/features/workspaces/api/workspaceJoin";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,13 +9,16 @@ import VerificationInput from "react-verification-input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useMemo, useEffect } from "react";
+import { useWorkspaceInfo } from "@/features/workspaces/api/workspaceInfo";
+import { useWorkspaceJoin } from "@/features/workspaces/api/workspaceJoin";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const JoinScreen = () => {
     const router = useRouter();
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
 
-    const { data, isLoading } = workspaceInfo({ id: workspaceId });
-    const { mutate, isPending } = workspaceJoin();
+    const { data, isLoading } = useWorkspaceInfo({ id: workspaceId });
+    const { mutate, isPending } = useWorkspaceJoin();
 
     const isMember = useMemo(() => data?.isMember, [data?.isMember]);
 

@@ -11,7 +11,7 @@ type Options = {
     throwError?: boolean;
 };
 
-export const generateUpload = () => {
+export const useGenerateUpload = () => {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<Error | null>(null);
     const [status, setStatus] = useState<"success" | "error" | "pending" | "settled" | null>(null);

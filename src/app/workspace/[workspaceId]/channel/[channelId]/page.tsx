@@ -1,18 +1,18 @@
 "use client";
 
-import { channelById } from "@/features/channels/api/channelById";
-import { channelIdParam } from "@/hooks/channelIdParam";
 import { AlertTriangle, LoaderCircle } from "lucide-react";
 import { Header } from "./header";
 import { Chat } from "./chat";
-import { messageList } from "@/features/messages/api/messageList";
 import { MessageFile } from "@/components/messageFile";
+import { useChannelById } from "@/features/channels/api/channelById";
+import { useMessageList } from "@/features/messages/api/messageList";
+import { usechannelIdParam } from "@/hooks/channelIdParam";
 
 const ChannelIdScreen = () => {
-    const channelId = channelIdParam();
+    const channelId = usechannelIdParam();
 
-    const { results, status, loadMore } = messageList({ channelId });
-    const { data: channel, isLoading: channelLoading } = channelById({ id: channelId });
+    const { results, status, loadMore } = useMessageList({ channelId });
+    const { data: channel, isLoading: channelLoading } = useChannelById({ id: channelId });
 
     if (channelLoading || status === "LoadingFirstPage") {
         return (

@@ -1,10 +1,10 @@
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Doc, Id } from "../../convex/_generated/dataModel";
-import { activeMember } from "@/features/members/api/activeMember";
 import { cn } from "@/lib/utils";
 import { FloatNote } from "./FloatNote";
 import { EmojiInsert } from "./emojiInsert";
 import { SmilePlus } from "lucide-react";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 interface ReactionsProps {
     data: Array<
@@ -20,8 +20,8 @@ export const Reactions = ({
     data,
     onChange,
 }: ReactionsProps) => {
-    const workspaceId = workspaceIdParam();
-    const { data: currentMember } = activeMember({ workspaceId });
+    const workspaceId = useWorkspaceIdParam();
+    const { data: currentMember } = useActiveMember({ workspaceId });
 
     const currentMemberId = currentMember?._id;
 

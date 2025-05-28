@@ -6,7 +6,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface UploadImageProps {

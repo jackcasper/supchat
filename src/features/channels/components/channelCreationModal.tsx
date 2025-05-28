@@ -1,27 +1,25 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
-import { channelModal } from "../store/channelModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { channelCreator } from "../api/channelCreator";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useChannelCreator } from "../api/channelCreator";
+import { useChannelModal } from "../store/channelModal";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 export const ChannelCreationModal = () => {
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
     const router = useRouter();
 
-    const { mutate, isPending } = channelCreator();
+    const { mutate, isPending } = useChannelCreator();
 
-    const [open, setOpen] = channelModal();
+    const [open, setOpen] = useChannelModal();
     const [name, setName] = useState("");
 
     const handleClose = () => {

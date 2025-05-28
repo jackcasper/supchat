@@ -10,10 +10,10 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { workspaceRemover } from "@/features/workspaces/api/workspaceRemover";
-import { workspaceUpdater } from "@/features/workspaces/api/workspaceUpdater";
-import { confirmation } from "@/hooks/confirmation";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useWorkspaceRemover } from "@/features/workspaces/api/workspaceRemover";
+import { useWorkspaceUpdater } from "@/features/workspaces/api/workspaceUpdater";
+import { useConfirmation } from "@/hooks/confirmation";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -30,9 +30,9 @@ export const Preferences = ({
     setOpen,
     initialValue,
 }: PreferencesProps) => {
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
     const router = useRouter();
-    const [ConfirmDialog, confirm] = confirmation(
+    const [ConfirmDialog, confirm] = useConfirmation(
         "Are you sure?",
         "This action is irreversible."
     );
@@ -40,17 +40,17 @@ export const Preferences = ({
     const [value, setValue] = useState(initialValue);
     const [editOpen, setEditOpen] = useState(false);
 
-    const { mutate: workspaceUpdate, isPending: isWorkspaceUpdating } = workspaceUpdater();
-    const { mutate: workspaceRemove, isPending: isWorkspaceRemoving } = workspaceRemover();
+    const { mutate: workspaceUpdate, isPending: isWorkspaceUpdating } = useWorkspaceUpdater();
+    const { mutate: workspaceRemove, isPending: isWorkspaceRemoving } = useWorkspaceRemover();
 
     const handleRemove = async () => {
         const ok = await confirm();
 
         if (!ok) return;
 
-        workspaceRemove({
-            id: workspaceId
-        }, {
+        workspaceRemove(
+            { id: workspaceId },
+            {
             onSuccess: () => {
                 toast.success("Workspace removed");
                 router.replace("/");

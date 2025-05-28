@@ -1,21 +1,21 @@
 "use client";
 
-import { conversationCreator } from "@/features/conversations/api/conversationCreator";
-import { memberIdParam } from "@/hooks/memberIdParam";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { LoaderCircle, TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { Conversation } from "./conversation";
+import { useConversationCreator } from "@/features/conversations/api/conversationCreator";
+import { useMemberIdParam } from "@/hooks/memberIdParam";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const MemberIdPage = () => {
-    const workspaceId = workspaceIdParam();
-    const memberId = memberIdParam();
+    const workspaceId = useWorkspaceIdParam();
+    const memberId = useMemberIdParam();
 
     const [conversationId, setConversationId] = useState<Id<"conversations"> | null>(null);
 
-    const { mutate, isPending } = conversationCreator();
+    const { mutate, isPending } = useConversationCreator();
 
     useEffect(() => {
         mutate({

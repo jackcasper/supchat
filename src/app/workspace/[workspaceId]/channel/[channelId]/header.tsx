@@ -4,7 +4,6 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -12,14 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { channelUpdater } from "@/features/channels/api/channelUpdater";
-import { channelIdParam } from "@/hooks/channelIdParam";
 import { toast } from "sonner";
-import { channelRemover } from "@/features/channels/api/channelRemover";
-import { confirmation } from "@/hooks/confirmation";
 import { useRouter } from "next/navigation";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
-import { activeMember } from "@/features/members/api/activeMember";
+import { useChannelRemover } from "@/features/channels/api/channelRemover";
+import { useChannelUpdater } from "@/features/channels/api/channelUpdater";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useConfirmation } from "@/hooks/confirmation";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 interface HeaderProps {
     channelName: string;
@@ -27,9 +26,9 @@ interface HeaderProps {
 
 export const Header = ({ channelName }: HeaderProps) => {
     const router = useRouter();
-    const channelId = channelIdParam();
-    const workspaceId = workspaceIdParam();
-    const [ConfirmDialog, confirm] = confirmation(
+    const channelId = usechannelIdParam();
+    const workspaceId = useWorkspaceIdParam();
+    const [ConfirmDialog, confirm] = useConfirmation(
         "Delete this channel?",
         "You are about to delete this channel. This action cannot be undone",
     );
@@ -37,9 +36,9 @@ export const Header = ({ channelName }: HeaderProps) => {
     const [value, setValue] = useState(channelName);
     const [editOpen, setEditOpen] = useState(false);
 
-    const { data: member } = activeMember({ workspaceId });
-    const { mutate: updateChannel, isPending: updatingChannel } = channelUpdater();
-    const { mutate: removeChannel, isPending: removingChannel } = channelRemover();
+    const { data: member } = useActiveMember({ workspaceId });
+    const { mutate: updateChannel, isPending: updatingChannel } = useChannelUpdater();
+    const { mutate: removeChannel, isPending: removingChannel } = useChannelRemover();
 
     const handleEditOpen = (value: boolean) => {
         if (member?.role !== "admin") return;

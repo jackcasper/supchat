@@ -2,6 +2,6 @@ import { atom, useAtom } from "jotai";
 
 const channelModalState = atom(false);
 
-export const channelModal = () => {
+export const useChannelModal = () => {
     return useAtom(channelModalState);
 };

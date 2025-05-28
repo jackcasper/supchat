@@ -1,28 +1,28 @@
-import { activeMember } from "@/features/members/api/activeMember";
-import { workspaceById } from "@/features/workspaces/api/workspaceById";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Hash, Loader, MessageSquareText, Send, TriangleAlert } from "lucide-react";
 import { WorkspaceHeader } from "./WorkspaceHeader";
 import { SidebarItem } from "./SidebarItem";
-import { channelList } from "@/features/channels/api/channelList";
 import { WorkspaceSection } from "./WorkspaceSection";
-import { memberList } from "@/features/members/api/memberList";
 import { UserItem } from "./userItem";
-import { channelModal } from "@/features/channels/store/channelModal";
-import { channelIdParam } from "@/hooks/channelIdParam";
-import { memberIdParam } from "@/hooks/memberIdParam";
+import { useChannelList } from "@/features/channels/api/channelList";
+import { useChannelModal } from "@/features/channels/store/channelModal";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { useMemberList } from "@/features/members/api/memberList";
+import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
+import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useMemberIdParam } from "@/hooks/memberIdParam";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 export const WorkspaceSidebar = () => {
-    const channelId = channelIdParam();
-    const workspaceId = workspaceIdParam();
-    const memberId = memberIdParam();
+    const channelId = usechannelIdParam();
+    const workspaceId = useWorkspaceIdParam();
+    const memberId = useMemberIdParam();
 
-    const [_open, setOpen] = channelModal();
+    const [_open, setOpen] = useChannelModal();
 
-    const { data: member, isLoading: memberLoading } = activeMember({ workspaceId });
-    const { data: workspace, isLoading: workspaceLoading } = workspaceById({ id: workspaceId });
-    const { data: channels, isLoading: channelsLoading } = channelList({ workspaceId });
-    const { data: members, isLoading: membersLoading } = memberList({ workspaceId });
+    const { data: member, isLoading: memberLoading } = useActiveMember({ workspaceId });
+    const { data: workspace, isLoading: workspaceLoading } = useWorkspaceById({ id: workspaceId });
+    const { data: channels, isLoading: channelsLoading } = useChannelList({ workspaceId });
+    const { data: members, isLoading: membersLoading } = useMemberList({ workspaceId });
 
     if (workspaceLoading || memberLoading) {
         return (

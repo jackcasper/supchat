@@ -1,19 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { LoaderCircle, TriangleAlert, X } from "lucide-react";
-import { messageById } from "../api/messageById";
 import { Message } from "@/components/message";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
-import { activeMember } from "@/features/members/api/activeMember";
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { messageCreator } from "@/features/messages/api/messageCreator";
-import { generateUpload } from "@/features/upload/api/generateUpload";
-import { channelIdParam } from "@/hooks/channelIdParam";
 import { toast } from "sonner";
-import { messageList } from "../api/messageList";
 import { differenceInMinutes, format, isToday, isYesterday, parse } from "date-fns";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { useMessageById } from "../api/messageById";
+import { useMessageCreator } from "../api/messageCreator";
+import { useMessageList } from "../api/messageList";
+import { useGenerateUpload } from "@/features/upload/api/generateUpload";
+import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -40,8 +40,8 @@ const formatDateLabel = (dateStr: string) => {
 };
 
 export const Thread = ({ messageId, onClose }: ThreadProps) => {
-    const workspaceId = workspaceIdParam();
-    const channelId = channelIdParam();
+    const workspaceId = useWorkspaceIdParam();
+    const channelId = usechannelIdParam();
 
     const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
     const [editorKey, setEditorKey] = useState(0);
@@ -49,9 +49,9 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
     const editorRef = useRef<Quill | null>(null);
 
-    const { data: currentMember } = activeMember({ workspaceId });
-    const { data: message, isLoading: messageLoading } = messageById({ id: messageId });
-    const { results, loadMore, status } = messageList({
+    const { data: currentMember } = useActiveMember({ workspaceId });
+    const { data: message, isLoading: messageLoading } = useMessageById({ id: messageId });
+    const { results, loadMore, status } = useMessageList({
         channelId,
         parentMessageId: messageId,
     });
@@ -59,8 +59,8 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
     const canLoadMore = status === "CanLoadMore";
     const isLoadingMore = status === "LoadingMore";
 
-    const { mutate: generateUploadUrl } = generateUpload();
-    const { mutate: createMessage } = messageCreator();
+    const { mutate: generateUploadUrl } = useGenerateUpload();
+    const { mutate: createMessage } = useMessageCreator();
 
     const handleSubmit = async ({
         body,

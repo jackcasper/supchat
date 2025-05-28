@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { workspaceById } from "@/features/workspaces/api/workspaceById";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Info, Search } from "lucide-react";
 import {
-    Command,
     CommandDialog,
     CommandEmpty,
     CommandGroup,
@@ -11,21 +8,21 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut,
 } from "@/components/ui/command";
 import { useState } from "react";
-import { channelList } from "@/features/channels/api/channelList";
-import { memberList } from "@/features/members/api/memberList";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useChannelList } from "@/features/channels/api/channelList";
+import { useMemberList } from "@/features/members/api/memberList";
+import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 export const Toolbar = () => {
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
     const router = useRouter();
 
-    const { data } = workspaceById({ id: workspaceId });
-    const { data: channels } = channelList({ workspaceId });
-    const { data: members } = memberList({ workspaceId });
+    const { data } = useWorkspaceById({ id: workspaceId });
+    const { data: channels } = useChannelList({ workspaceId });
+    const { data: members } = useMemberList({ workspaceId });
 
     const [open, setOpen] = useState(false);
 

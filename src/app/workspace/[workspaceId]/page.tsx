@@ -1,22 +1,22 @@
 "use client";
 
-import { channelList } from "@/features/channels/api/channelList";
-import { channelModal } from "@/features/channels/store/channelModal";
-import { activeMember } from "@/features/members/api/activeMember";
-import { workspaceById } from "@/features/workspaces/api/workspaceById";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useChannelList } from "@/features/channels/api/channelList";
+import { useChannelModal } from "@/features/channels/store/channelModal";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 import { AlertTriangle, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 const WorkspaceIdView = () => {
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
     const router = useRouter();
-    const [open, setOpen] = channelModal();
+    const [open, setOpen] = useChannelModal();
 
-    const { data: member, isLoading: memberLoading } = activeMember({ workspaceId });
-    const { data: workspace, isLoading: workspaceLoading } = workspaceById({ id: workspaceId });
-    const { data: channels, isLoading: channelsLoading } = channelList({
+    const { data: member, isLoading: memberLoading } = useActiveMember({ workspaceId });
+    const { data: workspace, isLoading: workspaceLoading } = useWorkspaceById({ id: workspaceId });
+    const { data: channels, isLoading: channelsLoading } = useChannelList({
         workspaceId,
     });
 

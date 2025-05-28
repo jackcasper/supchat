@@ -1,9 +1,9 @@
-import { parentMessage } from "@/features/messages/store/parentMessage";
-import { profileMember } from "@/features/members/store/profileMember";
+import { useProfileMember } from "@/features/members/store/profileMember";
+import { useParentMessage } from "@/features/messages/store/parentMessage";
 
 export const Panel = () => {
-    const [parentMessageId, setParentMessageId] = parentMessage();
-    const [profileMemberId, setProfileMemberId] = profileMember();
+    const [parentMessageId, setParentMessageId] = useParentMessage();
+    const [profileMemberId, setProfileMemberId] = useProfileMember();
 
     const onOpenMessage = (messageId: string) => {
         setParentMessageId(messageId);

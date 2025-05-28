@@ -20,7 +20,7 @@ type Options = {
     throwError?: boolean;
 };
 
-export const messageCreator = () => {
+export const useMessageCreator = () => {
     const [data, setData] = useState<ResponseType>(null);
     const [error, setError] = useState<Error | null>(null);
     const [status, setStatus] = useState<"success" | "error" | "pending" | "settled" | null>(null);

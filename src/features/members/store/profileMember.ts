@@ -1,5 +1,5 @@
 import { useQueryState } from "nuqs";
 
-export const profileMember = () => {
+export const useProfileMember = () => {
     return useQueryState("profileMemberId");
 };

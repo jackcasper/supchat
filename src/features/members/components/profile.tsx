@@ -1,27 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { memberById } from "../api/memberById";
 import { AtSign, ChevronDownCircle, LoaderCircle, TriangleAlert, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { memberUpdater } from "../api/memberUpdater";
-import { memberRemover } from "../api/memberRemover";
-import { activeMember } from "../api/activeMember";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import { toast } from "sonner";
-import { confirmation } from "@/hooks/confirmation";
 import { useRouter } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useActiveMember } from "../api/activeMember";
+import { useMemberById } from "../api/memberById";
+import { useMemberRemover } from "../api/memberRemover";
+import { useMemberUpdater } from "../api/memberUpdater";
+import { useConfirmation } from "@/hooks/confirmation";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 interface ProfileProps {
     memberId: Id<"members">;
@@ -30,30 +27,30 @@ interface ProfileProps {
 
 export const Profile = ({ memberId, onClose }: ProfileProps) => {
     const router = useRouter();
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
 
-    const [LeaveDialog, confirmLeave] = confirmation(
+    const [LeaveDialog, confirmLeave] = useConfirmation(
         "Leave workspace",
         "Are you sure you want to leave this workspace?",
     );
 
-    const [RemoveDialog, confirmRemove] = confirmation(
+    const [RemoveDialog, confirmRemove] = useConfirmation(
         "Remove member",
         "Are you sure you want to remove this member?",
     );
 
-    const [UpdateDialog, confirmUpdate] = confirmation(
+    const [UpdateDialog, confirmUpdate] = useConfirmation(
         "Change role",
         "Are you sure you want to change this member's role?",
     );
 
-    const { data: member, isLoading: memberLoading } = memberById({ id: memberId });
-    const { data: currentMember, isLoading: currentMemberLoading } = activeMember({
+    const { data: member, isLoading: memberLoading } = useMemberById({ id: memberId });
+    const { data: currentMember, isLoading: currentMemberLoading } = useActiveMember({
         workspaceId
     });
 
-    const { mutate: updateMember, isPending: updatingMember } = memberUpdater();
-    const { mutate: removeMember, isPending: removingMember } = memberRemover();
+    const { mutate: updateMember, isPending: isUpdatingMember } = useMemberUpdater();
+    const { mutate: removeMember, isPending: isRemovingMember } = useMemberRemover();
 
     const onRemove = async () => {
         const ok = await confirmRemove();

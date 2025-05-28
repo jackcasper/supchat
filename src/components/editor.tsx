@@ -212,12 +212,7 @@ const Editor = ({
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    onSubmit({
-                                        body: JSON.stringify(quillRef.current?.getContents()),
-                                        image,
-                                    })
-                                }}
+                                onClick={onCancel}
                                 disabled={disabled}
                             >
                                 Cancel

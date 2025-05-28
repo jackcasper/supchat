@@ -1,12 +1,12 @@
-import { messageCreator } from "@/features/messages/api/messageCreator";
-import { generateUpload } from "@/features/upload/api/generateUpload";
-import { channelIdParam } from "@/hooks/channelIdParam";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
 import dynamic from "next/dynamic";
 import Quill from "quill";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Id } from "../../../../../../convex/_generated/dataModel";
+import { useMessageCreator } from "@/features/messages/api/messageCreator";
+import { useGenerateUpload } from "@/features/upload/api/generateUpload";
+import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -27,11 +27,11 @@ export const Chat = ({ placeholder }: ChatProps) => {
 
     const editorRef = useRef<Quill | null>(null);
 
-    const { mutate: generateUploadUrl } = generateUpload();
-    const { mutate: createMessage } = messageCreator();
+    const { mutate: generateUploadUrl } = useGenerateUpload();
+    const { mutate: createMessage } = useMessageCreator();
     
-    const workspaceId = workspaceIdParam();
-    const channelId = channelIdParam();
+    const workspaceId = useWorkspaceIdParam();
+    const channelId = usechannelIdParam();
 
     const handleSubmit = async ({
         body,

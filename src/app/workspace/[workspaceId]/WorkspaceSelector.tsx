@@ -3,27 +3,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { workspaceById } from "@/features/workspaces/api/workspaceById";
-import { workspaceList } from "@/features/workspaces/api/workspaceList";
-import { workspaceModal } from "@/features/workspaces/store/workspaceModal";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
+import { useWorkspaceList } from "@/features/workspaces/api/workspaceList";
+import { useWorkspaceModal } from "@/features/workspaces/store/workspaceModal";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Loader, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 
 export const WorkspaceSelector = () => {
     const router = useRouter();
-    const workspaceId = workspaceIdParam();
-    const [_open, setOpen] = workspaceModal();
+    const workspaceId = useWorkspaceIdParam();
+    const [_open, setOpen] = useWorkspaceModal();
 
-    const { data: workspace, isLoading: workspaceLoading } = workspaceById({
+    const { data: workspaces, isLoading: workspacesLoading } = useWorkspaceList();
+    const { data: workspace, isLoading: workspaceLoading } = useWorkspaceById({
         id: workspaceId
     });
-    const { data: workspaces, isLoading: workspacesLoading } = workspaceList();
 
     const filteredWorkspaces = workspaces?.filter(
         (workspace) => workspace?._id !== workspaceId

@@ -4,10 +4,10 @@ import { Message } from "./message";
 import { ChannelDetail } from "./channelDetail";
 import { useState } from "react";
 import { Id } from "../../convex/_generated/dataModel";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
-import { activeMember } from "@/features/members/api/activeMember";
 import { LoaderCircle } from "lucide-react";
 import { ConversationDetail } from "./conversationDetail";
+import { useActiveMember } from "@/features/members/api/activeMember";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const TIME_THRESHOLD = 5;
 
@@ -43,9 +43,9 @@ export const MessageFile = ({
 }: MessageFileProps) => {
     const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
 
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
 
-    const { data: currentMember } = activeMember({ workspaceId });
+    const { data: currentMember } = useActiveMember({ workspaceId });
 
     const groupMessages = data?.reduce(
         (groups, message) => {

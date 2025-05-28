@@ -4,7 +4,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const userItemVariants = cva(
     "flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden",
@@ -34,7 +34,7 @@ export const UserItem = ({
     image,
     variant,
 }: UserItemProps) => {
-    const workspaceId = workspaceIdParam();
+    const workspaceId = useWorkspaceIdParam();
     const avatarFallBack = label.charAt(0).toUpperCase();
 
     return (

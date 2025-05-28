@@ -7,9 +7,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { workspaceNewJoinCode } from "@/features/workspaces/api/workspaceNewJoinCode";
-import { confirmation } from "@/hooks/confirmation";
-import { workspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useWorkspaceNewJoinCode } from "@/features/workspaces/api/workspaceNewJoinCode";
+import { useConfirmation } from "@/hooks/confirmation";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Link, RotateCw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,13 +27,13 @@ export const InviteModal = ({
     name,
     joinCode,
 }: InviteModalProps) => {
-    const workspaceId = workspaceIdParam();
-    const [ConfirmDialog, confirm] = confirmation(
+    const workspaceId = useWorkspaceIdParam();
+    const [ConfirmDialog, confirm] = useConfirmation(
         "Are you sure?",
         "This action will replace your existing invite code with a new one.",
     );
 
-    const { mutate, isPending } = workspaceNewJoinCode();
+    const { mutate, isPending } = useWorkspaceNewJoinCode();
 
     const handleNewCode = async () => {
         const ok = await confirm();
