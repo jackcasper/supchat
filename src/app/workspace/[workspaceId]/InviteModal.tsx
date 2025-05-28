@@ -6,7 +6,6 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { workspaceNewJoinCode } from "@/features/workspaces/api/workspaceNewJoinCode";
 import { confirmation } from "@/hooks/confirmation";
