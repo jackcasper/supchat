@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useChannelRemover } from "@/features/channels/api/channelRemover";
 import { useChannelUpdater } from "@/features/channels/api/channelUpdater";
 import { useActiveMember } from "@/features/members/api/activeMember";
-import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useChannelIdParam } from "@/hooks/channelIdParam";
 import { useConfirmation } from "@/hooks/confirmation";
 import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
@@ -26,7 +26,7 @@ interface HeaderProps {
 
 export const Header = ({ channelName }: HeaderProps) => {
     const router = useRouter();
-    const channelId = usechannelIdParam();
+    const channelId = useChannelIdParam();
     const workspaceId = useWorkspaceIdParam();
     const [ConfirmDialog, confirm] = useConfirmation(
         "Delete this channel?",

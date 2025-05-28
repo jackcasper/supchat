@@ -12,7 +12,7 @@ import { useMessageById } from "../api/messageById";
 import { useMessageCreator } from "../api/messageCreator";
 import { useMessageList } from "../api/messageList";
 import { useGenerateUpload } from "@/features/upload/api/generateUpload";
-import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useChannelIdParam } from "@/hooks/channelIdParam";
 import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -41,7 +41,7 @@ const formatDateLabel = (dateStr: string) => {
 
 export const Thread = ({ messageId, onClose }: ThreadProps) => {
     const workspaceId = useWorkspaceIdParam();
-    const channelId = usechannelIdParam();
+    const channelId = useChannelIdParam();
 
     const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
     const [editorKey, setEditorKey] = useState(0);
@@ -106,7 +106,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
             await createMessage(values, { throwError: true });
 
             setEditorKey((prevKey) => prevKey + 1);
-        } catch (error) {
+        } catch {
             toast.error("Failed to send the message");
         } finally {
             setPending(false);

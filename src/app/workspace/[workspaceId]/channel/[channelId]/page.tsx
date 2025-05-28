@@ -6,10 +6,10 @@ import { Chat } from "./chat";
 import { MessageFile } from "@/components/messageFile";
 import { useChannelById } from "@/features/channels/api/channelById";
 import { useMessageList } from "@/features/messages/api/messageList";
-import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useChannelIdParam } from "@/hooks/channelIdParam";
 
 const ChannelIdScreen = () => {
-    const channelId = usechannelIdParam();
+    const channelId = useChannelIdParam();
 
     const { results, status, loadMore } = useMessageList({ channelId });
     const { data: channel, isLoading: channelLoading } = useChannelById({ id: channelId });

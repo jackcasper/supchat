@@ -8,21 +8,21 @@ import { useChannelModal } from "@/features/channels/store/channelModal";
 import { useActiveMember } from "@/features/members/api/activeMember";
 import { useMemberList } from "@/features/members/api/memberList";
 import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
-import { usechannelIdParam } from "@/hooks/channelIdParam";
+import { useChannelIdParam } from "@/hooks/channelIdParam";
 import { useMemberIdParam } from "@/hooks/memberIdParam";
 import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 
 export const WorkspaceSidebar = () => {
-    const channelId = usechannelIdParam();
+    const channelId = useChannelIdParam();
     const workspaceId = useWorkspaceIdParam();
     const memberId = useMemberIdParam();
 
-    const [_open, setOpen] = useChannelModal();
+    const [, setOpen] = useChannelModal();
 
     const { data: member, isLoading: memberLoading } = useActiveMember({ workspaceId });
     const { data: workspace, isLoading: workspaceLoading } = useWorkspaceById({ id: workspaceId });
-    const { data: channels, isLoading: channelsLoading } = useChannelList({ workspaceId });
-    const { data: members, isLoading: membersLoading } = useMemberList({ workspaceId });
+    const { data: channels } = useChannelList({ workspaceId });
+    const { data: members } = useMemberList({ workspaceId });
 
     if (workspaceLoading || memberLoading) {
         return (
