@@ -48,7 +48,10 @@ export const Preferences = ({
         if (!ok) return;
 
         workspaceRemove(
-            { id: workspaceId },
+            {
+                id: workspaceId,
+                name: value,
+            },
             {
             onSuccess: () => {
                 toast.success("Workspace removed");

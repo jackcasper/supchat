@@ -233,7 +233,9 @@ export const update = mutation({
 });
 
 export const remove = mutation({
-    args: { id: v.id("workspaces") },
+    args: {
+        id: v.id("workspaces"),
+    },
     
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx);
