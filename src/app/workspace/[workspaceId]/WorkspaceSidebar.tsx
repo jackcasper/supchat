@@ -1,4 +1,4 @@
-import { Hash, Loader, MessageSquareText, Send, TriangleAlert } from "lucide-react";
+import { Hash, Loader, TriangleAlert } from "lucide-react";
 import { WorkspaceHeader } from "./WorkspaceHeader";
 import { SidebarItem } from "./SidebarItem";
 import { WorkspaceSection } from "./WorkspaceSection";
