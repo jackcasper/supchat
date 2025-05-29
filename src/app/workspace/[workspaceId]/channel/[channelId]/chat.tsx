@@ -39,7 +39,8 @@ export const Chat = ({ placeholder }: ChatProps) => {
     }: {
         body: string;
         image: File | null;
-    }) => {
+        }) => {
+        console.log("Submit clicked", { body, image });
         try {
             setPending(true);
             editorRef?.current?.enable(false);

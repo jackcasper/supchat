@@ -52,6 +52,17 @@ const Editor = ({
         disabledRef.current = disabled;
     });
 
+    const handleSubmit = () => {
+        const quill = quillRef.current;
+        const addedImage = imageElementRef.current?.files?.[0] || null;
+
+        const isEmpty = !addedImage && quill?.getText().replace(/<(.|\n)*?>/g, "").trim().length === 0;
+        if (!quill || isEmpty) return;
+
+        const body = JSON.stringify(quill.getContents());
+        submitRef.current?.({ body, image: addedImage });
+    };
+
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -69,15 +80,7 @@ const Editor = ({
                         enter: {
                             key: "Enter",
                             handler: () => {
-                                const text = quill.getText();
-                                const addedImage = imageElementRef.current?.files?.[0] || null;
-
-                                const isEmpty = !addedImage && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
-
-                                if (isEmpty) return;
-
-                                const body = JSON.stringify(quill.getContents());
-                                submitRef.current?.({ body, image: addedImage })
+                                handleSubmit();
                             }
                         },
                         shift_enter: {
@@ -220,12 +223,7 @@ const Editor = ({
                             <Button
                                 disabled={disabled || isEmpty}
                                 size="sm"
-                                onClick={() => {
-                                    onSubmit({
-                                        body: JSON.stringify(quillRef.current?.getContents()),
-                                        image,
-                                    })
-                                }}
+                                onClick={handleSubmit}
                                 className="bg-[#1c2c7a] hover:bg-[#0000b3] text-white"
                             >
                                 Save
@@ -236,7 +234,7 @@ const Editor = ({
                         <FloatNote label="Send">
                             <Button
                                 disabled={disabled || isEmpty}
-                                onClick={() => { }}
+                                onClick={handleSubmit}
                                 size="iconSm"
                                 className={cn(
                                     "ml-auto",
