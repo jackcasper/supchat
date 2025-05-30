@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
 import { Info, Search } from "lucide-react";
 import {
     CommandDialog,
@@ -14,7 +15,23 @@ import { useRouter } from "next/navigation";
 import { useChannelList } from "@/features/channels/api/channelList";
 import { useMemberList } from "@/features/members/api/memberList";
 import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
-import { useWorkspaceIdParam } from "@/hooks/workspaceIdParam";
+import { useMessageSearch } from "@/features/messages/api/messageSearch";
+
+const extractPlainText = (body: any): string => {
+    try {
+        const delta =
+            typeof body === "string" ? JSON.parse(body) : body;
+        
+        if (!delta?.ops) return "";
+
+        return delta.ops
+            .map((op: any) => (typeof op.insert === "string" ? op.insert : ""))
+            .join("")
+            .trim();
+    } catch (e) {
+        return "";
+    }
+};
 
 export const Toolbar = () => {
     const workspaceId = useWorkspaceIdParam();
@@ -25,6 +42,9 @@ export const Toolbar = () => {
     const { data: members } = useMemberList({ workspaceId });
 
     const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+
+    const searchedMessages = useMessageSearch(workspaceId, query);
 
     const onChannelClick = (channelId: string) => {
         setOpen(false);
@@ -36,6 +56,11 @@ export const Toolbar = () => {
         setOpen(false);
 
         router.push(`/workspace/${workspaceId}/member/${memberId}`);
+    };
+
+    const onMessageClick = (channelId: string, messageId: string) => {
+        setOpen(false);
+        router.push(`/workspace/${workspaceId}/channel/${channelId}#${messageId}`);
     };
 
     return (
@@ -52,6 +77,7 @@ export const Toolbar = () => {
                     <CommandInput placeholder="Type a command or search..." />
                     <CommandList>
                         <CommandEmpty>No results found.</CommandEmpty>
+
                         <CommandGroup heading="Channels">
                             {channels?.map((channel) => (
                                 <CommandItem key={channel._id} onSelect={() => onChannelClick(channel._id)}>
@@ -60,12 +86,30 @@ export const Toolbar = () => {
                             ))}
                         </CommandGroup>
                         <CommandSeparator />
+
                         <CommandGroup heading="Members">
                             {members?.map((member) => (
                                 <CommandItem key={member._id} onSelect={() => onMemberClick(member._id)}>
                                     {member.user.name}
                                 </CommandItem>
                             ))}
+                        </CommandGroup>
+                        <CommandSeparator />
+
+                        <CommandGroup heading="Messages">
+                            {searchedMessages?.map((message) => {
+                                const text = extractPlainText(message.body);
+                                return (
+                                    <CommandItem
+                                        key={message._id}
+                                        onSelect={() =>
+                                            onMessageClick(message.channelId, message._id)
+                                        }
+                                    >
+                                        {text ? text.slice(0, 50) : "[No readable text]"}
+                                    </CommandItem>
+                                );
+                            })}
                         </CommandGroup>
                     </CommandList>
                 </CommandDialog>

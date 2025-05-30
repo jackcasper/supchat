@@ -375,3 +375,30 @@ export const create = mutation({
         return messageId;
     },
 });
+
+export const search = query({
+    args: {
+        workspaceId: v.id("workspaces"),
+        search: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Unauthorized");
+
+        const member = await getMember(ctx, args.workspaceId, userId);
+        if (!member) throw new Error("Unauthorized");
+
+        const lowerSearch = args.search.toLowerCase();
+
+        const messages = await ctx.db
+            .query("messages")
+            .withIndex("by_workspace_id", q => q.eq("workspaceId", args.workspaceId))
+            .collect();
+        
+        const filtered = messages.filter(m =>
+            m.body.toLowerCase().includes(lowerSearch)
+        );
+
+        return filtered.slice(0, 10);
+    },
+});

@@ -13,9 +13,27 @@ import { SignInFlow } from "../types";
 import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import clsx from "clsx";
 
 interface SignUpSectionProps {
     setState: (state: SignInFlow) => void;
+};
+
+const getPasswordStrength = (password: string) => {
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+    const score = [hasLength, hasUpper, hasNumber, hasSymbol].filter(Boolean).length;
+
+    return {
+        hasLength,
+        hasUpper,
+        hasNumber,
+        hasSymbol,
+        score,
+    };
 };
 
 export const SignUpSection = ({ setState }: SignUpSectionProps) => {
@@ -27,6 +45,8 @@ export const SignUpSection = ({ setState }: SignUpSectionProps) => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [pending, setPending] = useState(false);
     const [error, setError] = useState("");
+
+    const strength = getPasswordStrength(password);
 
     const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -95,6 +115,34 @@ export const SignUpSection = ({ setState }: SignUpSectionProps) => {
                         type="password"
                         required
                     />
+
+                    <div className="space-y-1">
+                        <div className="flex h-2 overflow-hidden rounded bg-muted">
+                            <div
+                                className={clsx("transitiona-all duration-300 h-full", {
+                                    "w-1/4 bg-red-500": strength.score === 1,
+                                    "w-2/4 bg-yellow-500": strength.score === 2,
+                                    "w-3/4 bg-blue-500": strength.score === 3,
+                                    "w-full bg-green-500": strength.score === 4,
+                                    "w-[2px] bg-transparent": strength.score === 0,
+                                })}
+                            />
+                        </div>
+                        <ul className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                            <li className={strength.hasLength ? "text-green-500" : ""}>
+                                At least 8 characters
+                            </li>
+                            <li className={strength.hasUpper ? "text-green-500" : ""}>
+                                Contains uppercase letter
+                            </li>
+                            <li className={strength.hasUpper ? "text-green-500" : ""}>
+                                Contains number
+                            </li>
+                            <li className={strength.hasUpper ? "text-green-500" : ""}>
+                                Contains symbol
+                            </li>
+                        </ul>
+                    </div>
                     <Input
                         disabled={pending}
                         value={confirmPassword}
