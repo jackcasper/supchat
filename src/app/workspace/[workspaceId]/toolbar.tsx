@@ -17,15 +17,23 @@ import { useMemberList } from "@/features/members/api/memberList";
 import { useWorkspaceById } from "@/features/workspaces/api/workspaceById";
 import { useMessageSearch } from "@/features/messages/api/messageSearch";
 
-const extractPlainText = (body: any): string => {
+type QuillInsertOp = {
+    insert: string | object;
+};
+
+type QuillDelta = {
+    ops: QuillInsertOp[];
+};
+
+const extractPlainText = (body: string | QuillDelta): string => {
     try {
         const delta =
-            typeof body === "string" ? JSON.parse(body) : body;
+            typeof body === "string" ? (JSON.parse(body) as QuillDelta) : body;
         
         if (!delta?.ops) return "";
 
         return delta.ops
-            .map((op: any) => (typeof op.insert === "string" ? op.insert : ""))
+            .map((op: QuillInsertOp) => (typeof op.insert === "string" ? op.insert : ""))
             .join("")
             .trim();
     } catch {
