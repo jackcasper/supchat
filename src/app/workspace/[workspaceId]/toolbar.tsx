@@ -28,7 +28,7 @@ const extractPlainText = (body: any): string => {
             .map((op: any) => (typeof op.insert === "string" ? op.insert : ""))
             .join("")
             .trim();
-    } catch (e) {
+    } catch {
         return "";
     }
 };
