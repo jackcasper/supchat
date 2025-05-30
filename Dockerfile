@@ -1,15 +1,14 @@
 # Dockerfile
-FROM node:20-alpine
+FROM oven/bun:1.1
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm install --legacy-peer-deps
-
 COPY . .
 
-RUN npm run build
+RUN bun install
+
+RUN bun run install
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["bun", "start"]

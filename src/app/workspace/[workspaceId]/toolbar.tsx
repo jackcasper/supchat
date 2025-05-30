@@ -42,7 +42,7 @@ export const Toolbar = () => {
     const { data: members } = useMemberList({ workspaceId });
 
     const [open, setOpen] = useState(false);
-    const [query, setQuery] = useState("");
+    const [query] = useState("");
 
     const searchedMessages = useMessageSearch(workspaceId, query);
 
